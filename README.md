@@ -18,6 +18,6 @@ Given an assembly Target.dll with
         
 You can make `IVariant` covariant in `OutR` and contravariant in `InR` by running:
 
-    VariantInterfaces.exe <path_to_target.dll> Coco.IVariant`2/+OutR/-InA
+    VariantInterfaces.exe Target.dll Coco.IVariant`2/+OutR/-InA
     
 This overwrites the original DLL.
