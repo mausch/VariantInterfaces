@@ -2,11 +2,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "VariantInterfaces", "VariantInterfaces\VariantInterfaces.fsproj", "{93F6F325-0501-4C40-88B6-C062BC3FD7F0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{89B17C54-55DD-4070-9FC7-1EF7F2C13D55} = {89B17C54-55DD-4070-9FC7-1EF7F2C13D55}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F4A6BBF7-A8F7-4031-A556-930DBDA31BE8}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Target", "Target\Target.fsproj", "{89B17C54-55DD-4070-9FC7-1EF7F2C13D55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +23,10 @@ Global
 		{93F6F325-0501-4C40-88B6-C062BC3FD7F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93F6F325-0501-4C40-88B6-C062BC3FD7F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93F6F325-0501-4C40-88B6-C062BC3FD7F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89B17C54-55DD-4070-9FC7-1EF7F2C13D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B17C54-55DD-4070-9FC7-1EF7F2C13D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B17C54-55DD-4070-9FC7-1EF7F2C13D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B17C54-55DD-4070-9FC7-1EF7F2C13D55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
