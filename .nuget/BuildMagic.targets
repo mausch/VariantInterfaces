@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+Copyright (c) 2008-2012 IntelliFactory
+
+GNU Affero General Public License Usage
+
+BuildMagic is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License, version 3,
+as published by the Free Software Foundation.
+
+BuildMagic is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+for more details at <http://www.gnu.org/licenses/>.
+
+If you are unsure which license is appropriate for your use, please contact
+IntelliFactory at http://intellifactory.com/contact.
+
+-->
+
+<Project ToolsVersion="4.0" DefaultTargets="Build"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BuildMagicNuGetVersion Condition="'$(BuildMagicNuGetVersion)' == ''">1.8.40000</BuildMagicNuGetVersion>
+    <BuildMagicNuGetUrl Condition="'$(BuildMagicNuGetUrl)' == ''">http://nuget.org/api/v1/package/NuGet.CommandLine/$(BuildMagicNuGetVersion)</BuildMagicNuGetUrl>
+    <BuildMagicNuGetFolder Condition="'$(BuildMagicNuGetFolder)' == ''">$(MSBuildThisFileDirectory)/bin</BuildMagicNuGetFolder>
+    <BuildMagicNuGetLocation Condition="'$(BuildMagicNuGetLocation)' == ''">$(BuildMagicNuGetFolder)/NuGet.exe</BuildMagicNuGetLocation>
+    <BuildMagicPackagesConfig Condition="'$(BuildMagicPackagesConfig)' == ''">$(MSBuildProjectDirectory)/packages.config</BuildMagicPackagesConfig>
+    <BuildMagicSources Condition="'$(BuildMagicSources)' == ''"></BuildMagicSources>
+    <BuildMagicPackages Condition="'$(BuildMagicPackages)' == ''">$(MSBuildThisFileDirectory)/../packages</BuildMagicPackages>
+    <BuildDependsOn>BuildMagicRestore;$(BuildDependsOn)</BuildDependsOn>
+  </PropertyGroup>
+
+  <UsingTask TaskName="BuildMagicDownloadAndExtract" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <Address ParameterType="System.String" Required="true" />
+      <DestinationFile ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="WindowsBase" />
+      <Using Namespace="System.IO"/>
+      <Using Namespace="System.IO.Packaging"/>
+      <Using Namespace="System.Net"/>
+      <Using Namespace="System.Threading"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            var dir = Path.GetDirectoryName(DestinationFile);
+            var lockFile = Path.Combine(dir, "BuildMagic.lock");
+            var waits = 0;
+            Directory.CreateDirectory(dir);
+
+            // Wait to acquire file system lock.
+            while (true)
+            {
+                try
+                {
+                    using (var file = File.Open(lockFile, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        // Skip if already downloaded.
+                        if (!File.Exists(DestinationFile))
+                        {
+                            var zipFile = Path.GetTempFileName();
+                            using (var client = new WebClient())
+                            {
+                                client.DownloadFile(Address, zipFile);
+                            }
+                            using (var pkg = ZipPackage.Open(zipFile, FileMode.Open))
+                            {
+                                var part = pkg.GetParts().First(x => x.Uri.ToString() == "/tools/NuGet.exe");
+                                using (var stream = part.GetStream(FileMode.Open))
+                                {
+                                    using (var output = File.Open(DestinationFile, FileMode.Create))
+                                    {
+                                        stream.CopyTo(output);
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                }
+                catch (IOException e)
+                {
+                    waits = waits + 1;
+                    if (waits <= 100) {
+                        Thread.Sleep(100);
+                    } else {
+                        this.Log.LogErrorFromException(e);
+                        return false;
+                    }
+                }
+            }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="BuildMagicInstallNuget" Condition="!Exists($(BuildMagicNuGetLocation))">
+    <BuildMagicDownloadAndExtract Address="$(BuildMagicNuGetUrl)" DestinationFile="$(BuildMagicNuGetLocation)" />
+  </Target>
+
+  <Target Name="BuildMagicRestore" Condition="Exists('$(BuildMagicPackagesConfig)')" DependsOnTargets="BuildMagicInstallNuget">
+    <Exec Command='"$(BuildMagicNuGetLocation)" Install "$(BuildMagicPackagesConfig)" -Source "$(BuildMagicSources)" -O "$(BuildMagicPackages)" ' />
+  </Target>
+
+</Project>
