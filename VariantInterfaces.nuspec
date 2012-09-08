@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>VariantInterfaces</id>
+    <version>0.0.1.0</version>
+    <title>VariantInterfaces</title>
+    <authors>Mauricio Scheffer</authors>
+    <owners>mausch</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Command-line utility to add variance to interfaces in a .NET assembly.</description>
+    <copyright>Copyright Mauricio Scheffer 2012</copyright>
+  </metadata>
+  <files>
+    <file src="VariantInterfaces\bin\Release\VariantInterfaces.*" target="tools"/>
+    <file src="VariantInterfaces\bin\Release\Mono.Cecil.dll" target="tools"/>
+    <file src="VariantInterfaces\bin\Release\FSharp.Core.dll" target="tools"/>
+    <file src="Mono.Cecil.license.txt" target="tools"/>
+  </files>
+</package>
