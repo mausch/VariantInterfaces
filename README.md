@@ -21,3 +21,7 @@ You can make `IVariant` covariant in `OutR` and contravariant in `InR` by runnin
     VariantInterfaces.exe Target.dll Coco.IVariant`2/+OutR/-InA
     
 This overwrites the original DLL.
+
+# Binaries
+
+[Available on Nuget](http://nuget.org/packages/VariantInterfaces).
