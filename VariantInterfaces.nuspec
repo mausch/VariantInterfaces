@@ -6,6 +6,7 @@
     <title>VariantInterfaces</title>
     <authors>Mauricio Scheffer</authors>
     <owners>mausch</owners>
+    <projectUrl>https://github.com/mausch/VariantInterfaces</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Command-line utility to add variance to interfaces in a .NET assembly.</description>
     <copyright>Copyright Mauricio Scheffer 2012</copyright>
